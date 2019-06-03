@@ -76,7 +76,7 @@ class Iterative(Solver):
             max_iterations = self.max_iterations.value()
             args = self.while_loop(
                 cond=self.next_step, body=self.step, loop_vars=args,
-                maximum_iterations=max_iterations
+                maximum_iterations=max_iterations, use_while_v2=True
             )
 
         solution = self.end(*args)

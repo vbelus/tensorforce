@@ -46,7 +46,7 @@ class MultiStep(MetaOptimizer):
                 name='num-steps', module=num_steps, modules=parameter_modules
             )
 
-    def tf_step(self, variables, arguments, **kwargs):
+    def tf_step(self, variables, arguments, fn_reference=None, **kwargs):
         """
         Creates the TensorFlow operations for performing an optimization step.
 
@@ -60,7 +60,7 @@ class MultiStep(MetaOptimizer):
         """
 
         # # Set reference to compare with at each optimization step, in case of a comparative loss.
-        # arguments['reference'] = fn_reference(**arguments)
+        arguments['reference'] = fn_reference(**arguments)
         deltas = [tf.zeros_like(tensor=variable) for variable in variables]
 
         if self.unroll_loop:
@@ -86,8 +86,7 @@ class MultiStep(MetaOptimizer):
 
             num_steps = self.num_steps.value()
             deltas = self.while_loop(
-                cond=util.tf_always_true, body=body, loop_vars=deltas, maximum_iterations=num_steps,
-                use_while_v2=True
+                cond=util.tf_always_true, body=body, loop_vars=deltas, maximum_iterations=num_steps
             )
 
             return deltas
