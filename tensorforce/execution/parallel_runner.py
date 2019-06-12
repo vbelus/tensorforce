@@ -179,7 +179,7 @@ class ParallelRunner(object):
         episode_start = [time.time() for _ in self.environments]
 
         if self.sync_episodes:
-            is_terminated = [False for _ in self.environments]
+            terminated = [False for _ in self.environments]
 
         # Runner loop
         while True:
