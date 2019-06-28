@@ -107,8 +107,13 @@ class Model(Module):
             self.summarizer_spec = summarizer
 
         # Execution
-        self.execution_spec = execution
-        if self.execution_spec is not None:
+        if execution is None or (
+            execution['type'] == 'single' and execution['session_config'] is None and
+            execution['distributed_spec'] is None
+        ):
+            self.execution_spec = None
+        else:
+            self.execution_spec = execution
             self.execution_type = self.execution_spec['type']
             self.session_config = self.execution_spec['session_config']
             self.distributed_spec = self.execution_spec['distributed_spec']

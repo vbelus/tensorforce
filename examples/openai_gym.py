@@ -21,9 +21,9 @@ from tensorforce.environments import OpenAIGym
 from tensorforce.execution import Runner
 
 
-# python examples/openai_gym.py Pong-ram-v0 -a examples/configs/vpg.json -n examples/configs/mlp2_network.json -e 50000 -m 2000
+# python examples/openai_gym.py -g Pong-ram-v0 -a examples/configs/vpg.json -n examples/configs/mlp2_network.json -e 50000 -m 2000
 
-# python examples/openai_gym.py CartPole-v1 -a examples/configs/vpg.json -n examples/configs/mlp2_network.json -e 2000 -m 200
+# python examples/openai_gym.py -g CartPole-v1 -a examples/configs/vpg.json -n examples/configs/mlp2_network.json -e 2000 -m 200
 
 
 def main():
