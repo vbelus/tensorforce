@@ -1,5 +1,6 @@
 from tensorforce.environments import Environment
 import numpy as np
+import time
 
 
 class MatrixEnv(Environment):
@@ -31,9 +32,13 @@ class MatrixEnv(Environment):
         actions = self.handle_actions(actions)
         # print(actions[0,0])
 
-        self.matrix = np.tanh(self.matrix + actions)
+        #print(self.matrix)
+        #print(actions)
+        #time.sleep(1.0)
 
-        reward = 1 - np.sum(abs(self.matrix)) / (self.length_matrix**2)
+        self.matrix = (self.matrix + actions)
+
+        reward = (1 - np.sum(abs(self.matrix)) / (self.length_matrix**2))/20
 
         self.step += 1
 
