@@ -10,13 +10,13 @@ batch_size = 20
 env = MatrixEnv(length_matrix)
 
 actor_network = [
-    dict(type='conv2d', size=64, window=1, activation='relu'),
-    dict(type='conv2d', size=64, window=1, activation='relu')
+    dict(type='conv2d', size=64, window=1, activation='relu', is_trainable=True),
+    dict(type='conv2d', size=64, window=1, activation='relu', is_trainable=True)
 ]
 
 critic_network = [
-    dict(type='conv2d', size=64, window=1, activation='relu'),
-    dict(type='conv2d', size=64, window=1, activation='relu')
+    dict(type='conv2d', size=64, window=1, activation='relu', is_trainable=True),
+    dict(type='conv2d', size=64, window=1, activation='relu', is_trainable=True)
 ]
 
 agent = Agent.create(

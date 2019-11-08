@@ -21,7 +21,7 @@ class MatrixEnv(Environment):
 
     def reset(self):
         self.step = 0
-        
+
         self.matrix = np.random.random_sample(self.shape) * 2 - 1
 
         return self.matrix
@@ -29,7 +29,7 @@ class MatrixEnv(Environment):
     def get_state(self):
         return (self.matrix / 2 + 0.5)
 
-    def execute(self, actions=None):
+    def execute(self, actions):
         actions = self.handle_actions(actions)
 
         self.matrix = np.clip((self.matrix + actions), -1, 1)
