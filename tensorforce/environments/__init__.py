@@ -14,6 +14,8 @@
 # ==============================================================================
 
 from tensorforce.environments.environment import Environment
+from tensorforce.environments.environment_process_wrapper import ProcessWrapper
+
 from tensorforce.environments.multiplayer_environment import MultiplayerEnvironment
 
 from tensorforce.environments.arcade_learning_environment import ArcadeLearningEnvironment

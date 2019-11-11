@@ -1,4 +1,5 @@
-from tensorforce.environments import Environment
+import gym
+from gym import spaces
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,8 +11,8 @@ g = 9.8
 l = 0.2
 
 
-class SimplePendulumEnv(Environment):
-    def __init__(self, visualize=True, n_step_solver=2, dt=1e-2, n_step=1, print_state=False):
+class SimplePendulumEnv(gym.Env):
+    def __init__(self, visualize=False, n_step_solver=2, dt=1e-2, n_step=1, print_state=False):
         # Here we define the duration of an environment step,
         #                the number of solver steps / environment step
         self.dt = dt
@@ -56,22 +57,34 @@ class SimplePendulumEnv(Environment):
 
         self.y = [0.0, 0.0]
 
+        # Define action space and state space
+        self.action_space = self.actions()
+        self.observation_space = self.states()
+
         super(SimplePendulumEnv, self).__init__()
 
     def actions(self):
-        return dict(type='float', shape=(1,), min_value=-self.max_action, max_value=self.max_action)
+        high = np.array([
+            self.max_action
+        ])
+        return spaces.Box(-high, high, dtype=np.float32)
 
     def states(self):
-        return dict(type='float', shape=(3,))
+        # return spaces.Dict({
+        #     'x_position': spaces.Box(low=-1.0, high=1.0, shape=(1,)),
+        #     'y_position': spaces.Box(low=-1.0, high=1.0, shape=(1,)),
+        #     'omega': spaces.Box(low=np.inf, high=-np.inf, shape=(1,))
+        # })
 
-    def test(self, a=7):
-        return a
-
-    def y(self):
-        return "hehe"
+        high = np.array([
+            1,
+            1,
+            np.finfo(np.float32).max,
+        ])
+        return spaces.Box(-high, high, dtype=np.float32)
 
     def reset(self):
-        self.step = 0
+        self._step = 0
 
         # if random.random() > 0.5:
         #     self.y = [0.0, 0.0]
@@ -90,9 +103,21 @@ class SimplePendulumEnv(Environment):
         x = np.sin(theta)
         y = np.cos(theta)
 
-        return (x, y, self.y[1])
+        # state = {
+        #     'x_position': np.array(x),
+        #     'y_position': np.array(y),
+        #     'omega': np.array(self.y[1])
+        # }
 
-    def execute(self, actions):
+        state = np.array([
+            x,
+            y,
+            self.y[1]
+        ])
+
+        return state
+
+    def step(self, actions):
         # We process the action
         actions = self.handle_actions(actions)
 
@@ -109,14 +134,14 @@ class SimplePendulumEnv(Environment):
         if self.visualize:
             self.render()
 
-        self.step += 1
+        self._step += 1
 
-        if self.print_state and (self.step % 100 == 0):
-            print("step {} theta = {}".format(self.step, theta))
+        if self.print_state and (self._step % 100 == 0):
+            print("step {} theta = {}".format(self._step, theta))
             print("        theta dot: {}".format(self.y[1]))
             print("        moment: {}".format(actions))
 
-        return state, self.step >= self.n_step, reward
+        return state, self._step >= self.n_step, reward
 
     def handle_actions(self, actions):
         return actions[0]

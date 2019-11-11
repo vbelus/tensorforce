@@ -34,7 +34,7 @@ class MatrixEnv(Environment):
 
         self.matrix = np.clip((self.matrix + actions), -1, 1)
 
-        reward = np.sum((1 - abs(self.matrix) / self.n_step)) / self.length_matrix**2
+        reward = self.get_reward()
 
         self.step += 1
 
@@ -44,3 +44,9 @@ class MatrixEnv(Environment):
         actions = np.array(actions)
         actions = actions * 2 - 1
         return actions
+
+    def get_reward(self):
+        if method == 'sum':
+            return np.sum((1 - np.absolute(self.matrix)) / self.n_step) / self.length_matrix**2
+        if method == 'min':
+            return np.absolute(self.matrix)

@@ -8,19 +8,22 @@ n_step = 2000
 
 env = SimplePendulumEnv(visualize=True, n_step=n_step, print_state=True)
 
+
 actor_network = [
+    dict(type='dense', size=128, activation='relu'),
     dict(type='dense', size=64, activation='relu'),
     dict(type='dense', size=64, activation='relu')
 ]
 
 critic_network = [
+    dict(type='dense', size=128, activation='relu'),
     dict(type='dense', size=64, activation='relu'),
     dict(type='dense', size=64, activation='relu')
 ]
 
 
 agent = Agent.create(
-    agent='ppo',
+    agent='dueling_dqn',
     batch_size=10,
     learning_rate=1e-3,
     states=env.states(),

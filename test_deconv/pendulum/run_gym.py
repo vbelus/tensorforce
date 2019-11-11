@@ -1,34 +1,21 @@
 from tensorforce.agents import Agent
 from tensorforce.agents import  DeterministicPolicyGradient
-from env import SimplePendulumEnv
-from tensorforce.execution import ParallelRunner
-from tensorforce.environments.environment_process_wrapper import ProcessWrapper
-# from stable_baselines 
+from tensorforce.environments.openai_gym import OpenAIGym
+from env_gym import SimplePendulumEnv
+from gym.envs.classic_control import CartPoleEnv
+from tensorforce.execution import Runner
 import os
 
-env = ProcessWrapper(SimplePendulumEnv(n_step=200, visualize=False))
-print(env.states())
-print("a is: ", env.test(a=2))
-print("self.thread is: ", env.thread)
-print("self.y is: ", env.y())
-print("exiting")
-import sys
-sys.exit()
-
-batch_size = 20
+batch_size = 10
 n_step = 2000
 
 # Instantiate the environment
-n_env = 15
+n_env = 12
 
 list_envs = []
 
-env = ProcessWrapper(SimplePendulumEnv(visualize=False, n_step=n_step, print_state=True))
-list_envs.append(env)
-
-for index in range(n_env-1):
-    list_envs.append(ProcessWrapper(SimplePendulumEnv(n_step=n_step, visualize=False)))
-
+# env = OpenAIGym(SimplePendulumEnv())
+env = OpenAIGym(CartPoleEnv())
 
 actor_network = [
     dict(type='dense', size=128, activation='relu'),
@@ -47,8 +34,7 @@ agent = Agent.create(
     agent='ppo',
     batch_size=batch_size,
     learning_rate=1e-3,
-    states=env.states(),
-    actions=env.actions(),
+    environment=env,
     network=actor_network,
     discount=1.0,
     entropy_regularization=None,
@@ -62,8 +48,8 @@ agent = Agent.create(
 agent.initialize()
 
 # Initialize the runner
-runner = ParallelRunner(agent=agent, environments=list_envs)
+runner = Runner(agent=agent, environment=env)
 
 # Start the runner
-runner.run(num_episodes=30000, sync_episodes=False)
+runner.run(num_episodes=30000)
 runner.close()
